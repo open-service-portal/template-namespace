@@ -8,6 +8,7 @@ metadata:
   name: namespaces.openportal.dev
   labels:
     terasky.backstage.io/generate-form: "true"
+    terasky.backstage.io/version: "v1.1.0"
   annotations:
     crossplane.io/version: "v2.0"
     backstage.io/source-location: "url:https://github.com/open-service-portal/template-namespace"

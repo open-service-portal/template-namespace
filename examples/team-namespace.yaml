@@ -1,4 +1,5 @@
 # Example: Team namespace with labels and annotations
+# Note: This template only creates the namespace itself, keeping it simple
 apiVersion: openportal.dev/v1alpha1
 kind: Namespace
 metadata:

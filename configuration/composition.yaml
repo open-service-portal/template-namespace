@@ -15,7 +15,7 @@ spec:
   # Use Pipeline mode for composition functions
   mode: Pipeline
   pipeline:
-    # Step 1: Create the namespace
+    # Step 1: Create the namespace (ONLY the namespace, keeping it simple)
     - step: create-namespace
       functionRef:
         name: function-go-templating
@@ -45,56 +45,7 @@ spec:
                 {{ $key }}: {{ $value | quote }}
                 {{- end }}
     
-    # Step 2: Create default ServiceAccount
-    - step: create-service-account
-      functionRef:
-        name: function-go-templating
-      input:
-        apiVersion: gotemplating.fn.crossplane.io/v1beta1
-        kind: GoTemplate
-        source: Inline
-        inline:
-          template: |
-            ---
-            apiVersion: v1
-            kind: ServiceAccount
-            metadata:
-              name: default
-              namespace: {{ .observed.composite.resource.spec.name }}
-              annotations:
-                gotemplating.fn.crossplane.io/composition-resource-name: service-account-resource
-              labels:
-                managed-by: crossplane
-                team: {{ .observed.composite.resource.spec.team | default "platform-team" }}
-    
-    # Step 3: Create RoleBinding for namespace admin
-    - step: create-rolebinding
-      functionRef:
-        name: function-go-templating
-      input:
-        apiVersion: gotemplating.fn.crossplane.io/v1beta1
-        kind: GoTemplate
-        source: Inline
-        inline:
-          template: |
-            ---
-            apiVersion: rbac.authorization.k8s.io/v1
-            kind: RoleBinding
-            metadata:
-              name: {{ .observed.composite.resource.spec.name }}-admin
-              namespace: {{ .observed.composite.resource.spec.name }}
-              annotations:
-                gotemplating.fn.crossplane.io/composition-resource-name: rolebinding-resource
-            subjects:
-              - kind: Group
-                name: {{ .observed.composite.resource.spec.team | default "platform-team" }}
-                apiGroup: rbac.authorization.k8s.io
-            roleRef:
-              kind: ClusterRole
-              name: admin
-              apiGroup: rbac.authorization.k8s.io
-    
-    # Step 4: Mark XR as ready
+    # Step 2: Mark XR as ready
     - step: auto-ready
       functionRef:
         name: function-auto-ready
