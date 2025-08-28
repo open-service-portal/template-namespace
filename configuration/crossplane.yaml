@@ -1,0 +1,24 @@
+apiVersion: meta.pkg.crossplane.io/v1
+kind: Configuration
+metadata:
+  name: configuration-namespace
+  annotations:
+    meta.crossplane.io/maintainer: Open Service Portal Team
+    meta.crossplane.io/source: github.com/open-service-portal/template-namespace
+    meta.crossplane.io/license: Apache-2.0
+    meta.crossplane.io/description: |
+      Kubernetes namespace management with resource quotas, network policies, and RBAC.
+      Creates fully configured namespaces with optional limits and isolation.
+    meta.crossplane.io/readme: |
+      This Configuration provides a Crossplane Composite Resource Definition (XRD) and
+      Composition for managing Kubernetes namespaces with enterprise features:
+      - Resource quotas for cost control
+      - Network policies for security isolation  
+      - Team-based RBAC configuration
+      - Default service accounts and role bindings
+spec:
+  crossplane:
+    version: ">=v1.14.0"
+  dependsOn:
+    - provider: xpkg.upbound.io/crossplane-contrib/provider-kubernetes
+      version: ">=v0.13.0"

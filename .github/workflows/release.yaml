@@ -1,0 +1,253 @@
+---
+# GitHub Actions workflow to build and publish Crossplane Configuration packages
+name: Release Configuration Package
+
+on:
+  # Trigger on version tags
+  push:
+    tags:
+      - 'v*.*.*'  # Semantic version tags (e.g., v1.0.0, v2.1.3)
+  
+  # Allow manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag to use (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+
+env:
+  # Use GitHub Container Registry (ghcr.io) for the Open Service Portal organization
+  REGISTRY: ghcr.io
+  PACKAGE_NAME: open-service-portal/configuration-namespace
+
+jobs:
+  build-and-push:
+    name: Build and Push Configuration Package
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write # For creating releases
+      packages: write # For pushing to GitHub Container Registry
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Fetch all history for all tags and branches
+          fetch-depth: 0
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          # Enable multi-platform builds
+          platforms: linux/amd64,linux/arm64
+      
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Install Crossplane CLI
+        run: |
+          # Install latest Crossplane CLI
+          curl -sL https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh | sh
+          sudo mv crossplane /usr/local/bin/
+          # Ignore missing Crossplane server
+          crossplane version 2>/dev/null || true
+      
+      - name: Determine version
+        id: version
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${{ github.ref_name }}"
+          fi
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Building version: ${VERSION}"
+
+      - name: Build Configuration package
+        run: |
+          # Add version to package metadata
+          yq -i '.metadata.labels."openportal.dev/version" = env(VERSION)' configuration/crossplane.yaml
+          yq -i '.metadata.labels."openportal.dev/version" = env(VERSION)' configuration/xrd.yaml
+
+          # Build the .xpkg file
+          crossplane xpkg build \
+            --package-root=configuration/ \
+            --package-file=configuration-namespace.xpkg
+        env:
+          VERSION: ${{ steps.version.outputs.VERSION }}
+      
+      - name: Push package to registry
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          
+          # Push with version tag
+          crossplane xpkg push \
+            --package-files=configuration-namespace.xpkg \
+            ${{ env.REGISTRY }}/${{ env.PACKAGE_NAME }}:${VERSION}
+          
+          # Also push as 'latest' if this is not a pre-release
+          if [[ ! "${VERSION}" =~ -(alpha|beta|rc) ]]; then
+            crossplane xpkg push \
+              --package-files=configuration-namespace.xpkg \
+              ${{ env.REGISTRY }}/${{ env.PACKAGE_NAME }}:latest
+          fi
+      
+      - name: Generate package manifest for catalog
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          
+          # Create a catalog entry file
+          cat > catalog-entry.yaml <<EOF
+          ---
+          # Namespace Configuration Package
+          # Provides XRD and Composition for Kubernetes namespace management
+          apiVersion: pkg.crossplane.io/v1
+          kind: Configuration
+          metadata:
+            name: configuration-namespace
+            namespace: crossplane-system
+          spec:
+            package: ${{ env.REGISTRY }}/${{ env.PACKAGE_NAME }}:${VERSION}
+
+            # Package pull policy
+            # IfNotPresent: Only download if not in cache (recommended for production)
+            # Always: Check for updates on reconciliation (useful for development)
+            packagePullPolicy: IfNotPresent
+
+            # Revision activation policy
+            # Automatic: New revisions become active immediately (good for single-tenant)
+            # Manual: Requires manual activation (safer for multi-tenant production)
+            revisionActivationPolicy: Automatic
+
+            # Number of inactive revisions to keep
+            # Useful for rollback scenarios
+            revisionHistoryLimit: 3
+
+            # Skip dependency resolution
+            # Set to true if providers are pre-installed in the cluster
+            skipDependencyResolution: true
+          EOF
+          
+          echo "Generated catalog entry:"
+          cat catalog-entry.yaml
+      
+      - name: Upload catalog entry as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: catalog-entry-${{ steps.version.outputs.VERSION }}
+          path: catalog-entry.yaml
+          retention-days: 30
+      
+      - name: Create GitHub Release
+        if: github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Configuration Namespace ${{ steps.version.outputs.VERSION }}
+          body: |
+            ## Namespace Configuration Package ${{ steps.version.outputs.VERSION }}
+            
+            This release contains the Crossplane Configuration package for Kubernetes namespace management.
+            
+            ### Installation
+            
+            Install directly using kubectl:
+            ```bash
+            kubectl apply -f - <<EOF
+            apiVersion: pkg.crossplane.io/v1
+            kind: Configuration
+            metadata:
+              name: configuration-namespace
+              namespace: crossplane-system
+            spec:
+              package: ${{ env.REGISTRY }}/${{ env.PACKAGE_NAME }}:${{ steps.version.outputs.VERSION }}
+            EOF
+            ```
+            
+            Or use the catalog entry from the artifacts.
+            
+            ### Package Details
+            - Registry: `${{ env.REGISTRY }}/${{ env.PACKAGE_NAME }}`
+            - Version: `${{ steps.version.outputs.VERSION }}`
+            - Supports: Crossplane v2.0+
+            - Includes: XRD + Composition for Kubernetes namespaces
+            
+            ### What's Included
+            - Namespaced XRs for multi-tenant namespace management
+            - Resource quotas for cost control
+            - Network policies for security isolation
+            - Team-based RBAC configuration
+            - Default service accounts and role bindings
+          files: |
+            configuration-namespace.xpkg
+            catalog-entry.yaml
+          draft: false
+          prerelease: ${{ contains(steps.version.outputs.VERSION, '-') }}
+
+      # TODO: Wrap below steps into a custom action with necessary inputs and use it here
+
+      # Generate GitHub App token for catalog updates
+      # https://github.com/marketplace/actions/create-github-app-token
+      - name: Generate GitHub App Token
+        id: app-token
+        if: github.event_name == 'push'
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.APP_CATALOG_CLIENT_ID }}
+          private-key: ${{ secrets.APP_CATALOG_PRIVATE_KEY }}
+          owner: open-service-portal
+          repositories: catalog
+
+      - name: Get GitHub App User ID
+        id: get-user-id
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Checkout Catalog Repository
+        if: github.event_name == 'push'
+        uses: actions/checkout@v4
+        with:
+          repository: open-service-portal/catalog
+          token: ${{ steps.app-token.outputs.token }}
+          path: catalog
+
+      - name: Update Catalog Entry
+        if: github.event_name == 'push'
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+
+          cp catalog-entry.yaml catalog/templates/template-namespace.yaml
+          cd catalog
+          
+          # Configure git with app details
+          git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
+          git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
+          
+          git checkout -b update-namespace-${VERSION}
+          git add templates/template-namespace.yaml
+          git commit -m "chore: update Namespace Configuration to ${VERSION}"
+          git push origin update-namespace-${VERSION}
+
+      - name: Create Pull Request for Catalog Update
+        if: github.event_name == 'push'
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          gh pr create \
+            --repo open-service-portal/catalog \
+            --title "Update Namespace Configuration to ${VERSION}" \
+            --body "This PR updates the Namespace Configuration package reference in the catalog.
+            
+            **Version**: ${VERSION}
+            **Package**: \`${{ env.REGISTRY }}/${{ env.PACKAGE_NAME }}:${VERSION}\`
+            
+            The catalog entry has been automatically generated from the release workflow." \
+            --base main \
+            --head update-namespace-${VERSION}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
