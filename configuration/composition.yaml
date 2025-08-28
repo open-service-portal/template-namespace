@@ -44,77 +44,7 @@ spec:
                 {{ $key }}: {{ $value | quote }}
                 {{- end }}
     
-    # Step 2: Create ResourceQuota if enabled
-    - step: create-resource-quota
-      functionRef:
-        name: function-go-templating
-      input:
-        apiVersion: gotemplating.fn.crossplane.io/v1beta1
-        kind: GoTemplate
-        source: Inline
-        inline:
-          template: |
-            {{- if .observed.composite.resource.spec.quotas.enabled }}
-            ---
-            apiVersion: v1
-            kind: ResourceQuota
-            metadata:
-              name: {{ .observed.composite.resource.spec.name }}-quota
-              namespace: {{ .observed.composite.resource.spec.name }}
-            spec:
-              hard:
-                limits.cpu: {{ .observed.composite.resource.spec.quotas.limits.cpu | default "10" | quote }}
-                limits.memory: {{ .observed.composite.resource.spec.quotas.limits.memory | default "10Gi" | quote }}
-                requests.storage: {{ .observed.composite.resource.spec.quotas.limits.storage | default "100Gi" | quote }}
-                persistentvolumeclaims: "10"
-                services.loadbalancers: "2"
-                services.nodeports: "5"
-            {{- end }}
-    
-    # Step 3: Create default NetworkPolicy if enabled
-    - step: create-network-policy
-      functionRef:
-        name: function-go-templating
-      input:
-        apiVersion: gotemplating.fn.crossplane.io/v1beta1
-        kind: GoTemplate
-        source: Inline
-        inline:
-          template: |
-            {{- if .observed.composite.resource.spec.networkPolicies.enabled }}
-            ---
-            apiVersion: networking.k8s.io/v1
-            kind: NetworkPolicy
-            metadata:
-              name: {{ .observed.composite.resource.spec.name }}-default-deny
-              namespace: {{ .observed.composite.resource.spec.name }}
-            spec:
-              podSelector: {}
-              policyTypes:
-                - Ingress
-                - Egress
-              ingress:
-                # Allow traffic from the same namespace
-                - from:
-                    - podSelector: {}
-                # Allow traffic from specified namespaces
-                {{- range .observed.composite.resource.spec.networkPolicies.allowNamespaces }}
-                - from:
-                    - namespaceSelector:
-                        matchLabels:
-                          kubernetes.io/metadata.name: {{ . }}
-                {{- end }}
-                # Always allow from ingress-nginx
-                - from:
-                    - namespaceSelector:
-                        matchLabels:
-                          kubernetes.io/metadata.name: ingress-nginx
-              egress:
-                # Allow all egress by default
-                - {}
-            {{- end }}
-    
-    # Step 4: Create default ServiceAccount
+    # Step 2: Create default ServiceAccount
     - step: create-service-account
       functionRef:
         name: function-go-templating
@@ -134,7 +64,7 @@ spec:
                 managed-by: crossplane
                 team: {{ .observed.composite.resource.spec.team | default "platform-team" }}
     
-    # Step 5: Create RoleBinding for namespace admin
+    # Step 3: Create RoleBinding for namespace admin
     - step: create-rolebinding
       functionRef:
         name: function-go-templating
@@ -159,7 +89,7 @@ spec:
               name: admin
               apiGroup: rbac.authorization.k8s.io
     
-    # Step 6: Mark XR as ready
+    # Step 4: Mark XR as ready
     - step: auto-ready
       functionRef:
         name: function-auto-ready

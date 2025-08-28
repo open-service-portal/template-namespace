@@ -1,0 +1,17 @@
+# Example: Team namespace with labels and annotations
+apiVersion: openportal.dev/v1alpha1
+kind: Namespace
+metadata:
+  name: team-backend
+  namespace: default  # XR can be created in any namespace (v2 style)
+spec:
+  name: backend-services
+  team: backend-team
+  environment: production
+  labels:
+    cost-center: engineering
+    compliance: required
+  annotations:
+    description: "Production namespace for backend services"
+    owner: "backend-team@example.com"
+    created-by: "backstage"
