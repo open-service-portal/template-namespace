@@ -15,7 +15,7 @@ metadata:
     openportal.dev/description: "Creates and manages Kubernetes namespaces with labels and annotations"
     openportal.dev/icon: "folder"
 spec:
-  scope: Namespaced # XRs can be created directly in namespaces
+  scope: Cluster # Namespaces are cluster-scoped resources
   group: openportal.dev
   names:
     kind: Namespace
