@@ -39,6 +39,7 @@ spec:
                 {{ $key }}: {{ $value | quote }}
                 {{- end }}
               annotations:
+                gotemplating.fn.crossplane.io/composition-resource-name: namespace-resource
                 crossplane.io/composite-resource-name: {{ .observed.composite.resource.metadata.name }}
                 {{- range $key, $value := .observed.composite.resource.spec.annotations }}
                 {{ $key }}: {{ $value | quote }}
@@ -60,6 +61,8 @@ spec:
             metadata:
               name: default
               namespace: {{ .observed.composite.resource.spec.name }}
+              annotations:
+                gotemplating.fn.crossplane.io/composition-resource-name: service-account-resource
               labels:
                 managed-by: crossplane
                 team: {{ .observed.composite.resource.spec.team | default "platform-team" }}
@@ -80,6 +83,8 @@ spec:
             metadata:
               name: {{ .observed.composite.resource.spec.name }}-admin
               namespace: {{ .observed.composite.resource.spec.name }}
+              annotations:
+                gotemplating.fn.crossplane.io/composition-resource-name: rolebinding-resource
             subjects:
               - kind: Group
                 name: {{ .observed.composite.resource.spec.team | default "platform-team" }}
