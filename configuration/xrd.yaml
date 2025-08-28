@@ -1,20 +1,25 @@
+---
 # Namespace XRD (Composite Resource Definition)
 # Restaurant Analogy: Menu item for "table reservation" - creates a dedicated space for your resources
-apiVersion: apiextensions.crossplane.io/v1
+# Using Crossplane v2 with namespaced XRs (no claims needed)
+apiVersion: apiextensions.crossplane.io/v2
 kind: CompositeResourceDefinition
 metadata:
-  name: namespaces.platform.io
+  name: namespaces.openportal.dev
+  labels:
+    terasky.backstage.io/generate-form: "true"
   annotations:
+    crossplane.io/version: "v2.0"
+    backstage.io/source-location: "url:https://github.com/open-service-portal/template-namespace"
     openportal.dev/tags: "namespace,kubernetes,core"
     openportal.dev/description: "Creates and manages Kubernetes namespaces with labels and annotations"
     openportal.dev/icon: "folder"
 spec:
-  group: platform.io
+  scope: Namespaced # XRs can be created directly in namespaces
+  group: openportal.dev
   names:
     kind: Namespace
     plural: namespaces
-    singular: namespace
-  # Use v2 namespaced resources (no claims needed!)
   versions:
     - name: v1alpha1
       served: true

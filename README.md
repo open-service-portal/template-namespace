@@ -22,7 +22,7 @@ This template provides a comprehensive namespace provisioning solution that incl
 ### Basic Namespace
 
 ```yaml
-apiVersion: platform.io/v1alpha1
+apiVersion: openportal.dev/v1alpha1
 kind: Namespace
 metadata:
   name: my-namespace
@@ -36,7 +36,7 @@ spec:
 ### Namespace with Resource Quotas
 
 ```yaml
-apiVersion: platform.io/v1alpha1
+apiVersion: openportal.dev/v1alpha1
 kind: Namespace
 metadata:
   name: staging-app
@@ -55,7 +55,7 @@ spec:
 ### Namespace with Network Isolation
 
 ```yaml
-apiVersion: platform.io/v1alpha1
+apiVersion: openportal.dev/v1alpha1
 kind: Namespace
 metadata:
   name: prod-secure

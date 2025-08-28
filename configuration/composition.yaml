@@ -1,14 +1,15 @@
+---
 # Namespace Composition
 # Restaurant Analogy: Recipe for "setting up a dining area" - prepares the space with all necessary elements
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: namespaces.platform.io
+  name: namespaces.openportal.dev
   labels:
-    crossplane.io/xrd: namespaces.platform.io
+    crossplane.io/xrd: namespaces.openportal.dev
 spec:
   compositeTypeRef:
-    apiVersion: platform.io/v1alpha1
+    apiVersion: openportal.dev/v1alpha1
     kind: Namespace
   
   # Use Pipeline mode for composition functions

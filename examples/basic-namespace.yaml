@@ -1,5 +1,5 @@
 # Example: Basic namespace creation
-apiVersion: platform.io/v1alpha1
+apiVersion: openportal.dev/v1alpha1
 kind: Namespace
 metadata:
   name: demo-basic
