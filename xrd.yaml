@@ -1,0 +1,112 @@
+# Namespace XRD (Composite Resource Definition)
+# Restaurant Analogy: Menu item for "table reservation" - creates a dedicated space for your resources
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: namespaces.platform.io
+  annotations:
+    openportal.dev/tags: "namespace,kubernetes,core"
+    openportal.dev/description: "Creates and manages Kubernetes namespaces with labels and annotations"
+    openportal.dev/icon: "folder"
+spec:
+  group: platform.io
+  names:
+    kind: Namespace
+    plural: namespaces
+    singular: namespace
+  # Use v2 namespaced resources (no claims needed!)
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              description: Namespace configuration
+              properties:
+                name:
+                  type: string
+                  description: Name of the namespace to create
+                  pattern: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
+                  minLength: 1
+                  maxLength: 63
+                labels:
+                  type: object
+                  description: Labels to apply to the namespace
+                  additionalProperties:
+                    type: string
+                  default:
+                    managed-by: crossplane
+                    created-by: backstage
+                annotations:
+                  type: object
+                  description: Annotations to apply to the namespace
+                  additionalProperties:
+                    type: string
+                team:
+                  type: string
+                  description: Team that owns this namespace
+                  default: platform-team
+                environment:
+                  type: string
+                  description: Environment type (dev, staging, production)
+                  default: dev
+                  enum:
+                    - dev
+                    - staging
+                    - production
+                quotas:
+                  type: object
+                  description: Resource quotas for the namespace
+                  properties:
+                    enabled:
+                      type: boolean
+                      description: Enable resource quotas
+                      default: false
+                    limits:
+                      type: object
+                      description: Resource limits
+                      properties:
+                        cpu:
+                          type: string
+                          description: CPU limit (e.g., "10")
+                          default: "10"
+                        memory:
+                          type: string
+                          description: Memory limit (e.g., "10Gi")
+                          default: "10Gi"
+                        storage:
+                          type: string
+                          description: Storage limit (e.g., "100Gi")
+                          default: "100Gi"
+                networkPolicies:
+                  type: object
+                  description: Network policy configuration
+                  properties:
+                    enabled:
+                      type: boolean
+                      description: Enable default network policies
+                      default: false
+                    allowNamespaces:
+                      type: array
+                      description: List of namespaces to allow traffic from
+                      items:
+                        type: string
+                      default: []
+              required:
+                - name
+            status:
+              type: object
+              properties:
+                ready:
+                  type: boolean
+                  description: Whether the namespace is ready
+                phase:
+                  type: string
+                  description: Current phase of the namespace
+                message:
+                  type: string
+                  description: Status message

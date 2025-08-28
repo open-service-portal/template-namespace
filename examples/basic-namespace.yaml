@@ -1,0 +1,13 @@
+# Example: Basic namespace creation
+apiVersion: platform.io/v1alpha1
+kind: Namespace
+metadata:
+  name: demo-basic
+  namespace: default  # XR can be created in any namespace (v2 style)
+spec:
+  name: demo-basic
+  team: platform-team
+  environment: dev
+  labels:
+    purpose: demo
+    managed-by: crossplane

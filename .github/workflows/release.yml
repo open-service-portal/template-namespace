@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Get template version
+        id: version
+        run: |
+          # Extract version from XRD
+          VERSION=$(grep "name: v" xrd.yaml | head -1 | sed 's/.*name: //')
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Template version: ${VERSION}"
+      
+      - name: Create release tag
+        run: |
+          TAG="${{ steps.version.outputs.version }}-$(date +%Y%m%d-%H%M%S)"
+          echo "Creating release tag: ${TAG}"
+          echo "TAG=${TAG}" >> $GITHUB_ENV
+      
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ env.TAG }}
+          name: "Namespace Template ${{ env.TAG }}"
+          body: |
+            ## Namespace Template Release
+            
+            This release contains the Crossplane template for Kubernetes namespace management.
+            
+            ### Components
+            - `xrd.yaml` - Composite Resource Definition for Namespace
+            - `composition.yaml` - Composition implementing namespace creation
+            - `examples/` - Example resource configurations
+            
+            ### Features
+            - Namespace creation with labels and annotations
+            - Optional resource quotas
+            - Optional network policies
+            - Team-based RBAC
+            - Default service account creation
+            
+            ### Usage
+            Apply this template to your cluster via the catalog:
+            ```yaml
+            apiVersion: platform.io/v1alpha1
+            kind: Namespace
+            metadata:
+              name: my-namespace
+            spec:
+              name: my-namespace
+              team: my-team
+              environment: dev
+            ```
+          artifacts: |
+            xrd.yaml
+            composition.yaml
+          makeLatest: true
