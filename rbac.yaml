@@ -1,0 +1,87 @@
+---
+# Grant Crossplane permission to create and manage Kubernetes namespaces and related resources
+# This is required for direct Kubernetes resource creation without provider-kubernetes
+# https://docs.crossplane.io/latest/concepts/rbac/#composed-resources
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: crossplane-namespace-resources
+  labels:
+    rbac.crossplane.io/aggregate-to-crossplane: "true"
+    app.kubernetes.io/component: crossplane
+    app.kubernetes.io/part-of: namespace-template
+rules:
+# Allow Crossplane to manage Namespaces
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+# Allow Crossplane to manage ResourceQuotas
+- apiGroups:
+  - ""
+  resources:
+  - resourcequotas
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+# Allow Crossplane to manage ServiceAccounts
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+# Allow Crossplane to manage NetworkPolicies
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - networkpolicies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+# Allow Crossplane to manage RoleBindings
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+# Allow reading ClusterRoles for RoleBinding references
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - clusterroles
+  verbs:
+  - get
+  - list
+  - watch

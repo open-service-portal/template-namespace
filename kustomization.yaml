@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Only include the Crossplane resources, not the examples
+resources:
+  - configuration/xrd.yaml
+  - configuration/composition.yaml
+  - rbac.yaml
+# Note: examples/*.yaml are intentionally NOT included
