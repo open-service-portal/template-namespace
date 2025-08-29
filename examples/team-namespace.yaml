@@ -1,10 +1,9 @@
 # Example: Team namespace with labels and annotations
 # Note: This template only creates the namespace itself, keeping it simple
 apiVersion: openportal.dev/v1alpha1
-kind: Namespace
+kind: ManagedNamespace
 metadata:
   name: team-backend
-  namespace: default  # XR can be created in any namespace (v2 style)
 spec:
   name: backend-services
   team: backend-team

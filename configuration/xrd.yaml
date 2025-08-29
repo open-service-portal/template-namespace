@@ -5,7 +5,7 @@
 apiVersion: apiextensions.crossplane.io/v2
 kind: CompositeResourceDefinition
 metadata:
-  name: namespaces.openportal.dev
+  name: managednamespaces.openportal.dev
   labels:
     terasky.backstage.io/generate-form: "true"
     terasky.backstage.io/version: "v1.1.0"
@@ -19,8 +19,8 @@ spec:
   scope: Cluster # Namespaces are cluster-scoped resources
   group: openportal.dev
   names:
-    kind: Namespace
-    plural: namespaces
+    kind: ManagedNamespace
+    plural: managednamespaces
   versions:
     - name: v1alpha1
       served: true
