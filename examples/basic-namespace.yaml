@@ -1,9 +1,8 @@
 # Example: Basic namespace creation
 apiVersion: openportal.dev/v1alpha1
-kind: Namespace
+kind: ManagedNamespace
 metadata:
   name: demo-basic
-  namespace: default  # XR can be created in any namespace (v2 style)
 spec:
   name: demo-basic
   team: platform-team

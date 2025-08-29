@@ -4,13 +4,13 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: namespaces.openportal.dev
+  name: managednamespaces.openportal.dev
   labels:
-    crossplane.io/xrd: namespaces.openportal.dev
+    crossplane.io/xrd: managednamespaces.openportal.dev
 spec:
   compositeTypeRef:
     apiVersion: openportal.dev/v1alpha1
-    kind: Namespace
+    kind: ManagedNamespace
   
   # Use Pipeline mode for composition functions
   mode: Pipeline
@@ -40,6 +40,7 @@ spec:
                 {{- end }}
               annotations:
                 gotemplating.fn.crossplane.io/composition-resource-name: namespace-resource
+                gotemplating.fn.crossplane.io/ready: "True"
                 crossplane.io/composite-resource-name: {{ .observed.composite.resource.metadata.name }}
                 {{- range $key, $value := .observed.composite.resource.spec.annotations }}
                 {{ $key }}: {{ $value | quote }}
