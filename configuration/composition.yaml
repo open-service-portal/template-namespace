@@ -15,8 +15,9 @@ spec:
   # Use Pipeline mode for composition functions
   mode: Pipeline
   pipeline:
-    # Step 1: Create the namespace (ONLY the namespace, keeping it simple)
-    - step: create-namespace
+    # Step 1: Create namespace using provider-kubernetes Object resource
+    # This approach works better with cluster-scoped XRs
+    - step: create-namespace-object
       functionRef:
         name: function-go-templating
       input:
@@ -26,25 +27,40 @@ spec:
         inline:
           template: |
             ---
-            apiVersion: v1
-            kind: Namespace
+            apiVersion: kubernetes.crossplane.io/v1alpha2
+            kind: Object
             metadata:
-              name: {{ .observed.composite.resource.spec.name }}
-              labels:
-                managed-by: crossplane
-                created-by: backstage
-                team: {{ .observed.composite.resource.spec.team | default "platform-team" }}
-                environment: {{ .observed.composite.resource.spec.environment | default "dev" }}
-                {{- range $key, $value := .observed.composite.resource.spec.labels }}
-                {{ $key }}: {{ $value | quote }}
-                {{- end }}
+              name: namespace-{{ .observed.composite.resource.spec.name }}
               annotations:
+<<<<<<< HEAD
                 gotemplating.fn.crossplane.io/composition-resource-name: namespace-resource
                 gotemplating.fn.crossplane.io/ready: "True"
+=======
+                gotemplating.fn.crossplane.io/composition-resource-name: namespace-object
+>>>>>>> 1ccfbed (fix: remove hardcoded terasky.backstage.io/version label)
                 crossplane.io/composite-resource-name: {{ .observed.composite.resource.metadata.name }}
-                {{- range $key, $value := .observed.composite.resource.spec.annotations }}
-                {{ $key }}: {{ $value | quote }}
-                {{- end }}
+            spec:
+              forProvider:
+                manifest:
+                  apiVersion: v1
+                  kind: Namespace
+                  metadata:
+                    name: {{ .observed.composite.resource.spec.name }}
+                    labels:
+                      managed-by: crossplane
+                      created-by: backstage
+                      team: {{ .observed.composite.resource.spec.team | default "platform-team" }}
+                      environment: {{ .observed.composite.resource.spec.environment | default "dev" }}
+                      {{- range $key, $value := .observed.composite.resource.spec.labels }}
+                      {{ $key }}: {{ $value | quote }}
+                      {{- end }}
+                    annotations:
+                      crossplane.io/composite-resource-name: {{ .observed.composite.resource.metadata.name }}
+                      {{- range $key, $value := .observed.composite.resource.spec.annotations }}
+                      {{ $key }}: {{ $value | quote }}
+                      {{- end }}
+              providerConfigRef:
+                name: kubernetes-provider
     
     # Step 2: Mark XR as ready
     - step: auto-ready
