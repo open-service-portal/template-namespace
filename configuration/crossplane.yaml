@@ -2,6 +2,8 @@ apiVersion: meta.pkg.crossplane.io/v1
 kind: Configuration
 metadata:
   name: configuration-namespace
+  labels:
+    # Version label will be added by CI/CD
   annotations:
     meta.crossplane.io/maintainer: Open Service Portal Team
     meta.crossplane.io/source: github.com/open-service-portal/template-namespace
