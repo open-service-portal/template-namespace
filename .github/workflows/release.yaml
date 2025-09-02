@@ -71,9 +71,10 @@ jobs:
 
       - name: Build Configuration package
         run: |
-          # Add version to package metadata
-          yq -i '.metadata.labels."openportal.dev/version" = env(VERSION)' configuration/crossplane.yaml
-          yq -i '.metadata.labels."openportal.dev/version" = env(VERSION)' configuration/xrd.yaml
+          # Skip adding version labels as yq corrupts multi-line YAML strings
+          # TODO: Find a better way to add version labels without breaking YAML structure
+          # yq -i '.metadata.labels."openportal.dev/version" = env(VERSION)' configuration/crossplane.yaml
+          # yq -i '.metadata.labels."openportal.dev/version" = env(VERSION)' configuration/xrd.yaml
 
           # Build the .xpkg file
           crossplane xpkg build \
