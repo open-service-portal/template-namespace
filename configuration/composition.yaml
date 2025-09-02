@@ -32,12 +32,8 @@ spec:
             metadata:
               name: namespace-{{ .observed.composite.resource.spec.name }}
               annotations:
-<<<<<<< HEAD
                 gotemplating.fn.crossplane.io/composition-resource-name: namespace-resource
                 gotemplating.fn.crossplane.io/ready: "True"
-=======
-                gotemplating.fn.crossplane.io/composition-resource-name: namespace-object
->>>>>>> 1ccfbed (fix: remove hardcoded terasky.backstage.io/version label)
                 crossplane.io/composite-resource-name: {{ .observed.composite.resource.metadata.name }}
             spec:
               forProvider:
