@@ -2,8 +2,6 @@ apiVersion: meta.pkg.crossplane.io/v1
 kind: Configuration
 metadata:
   name: configuration-namespace
-  labels:
-    openportal.dev/type: "namespace-management"
   annotations:
     meta.crossplane.io/maintainer: Open Service Portal Team
     meta.crossplane.io/source: github.com/open-service-portal/template-namespace
