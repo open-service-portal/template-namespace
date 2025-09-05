@@ -15,6 +15,14 @@ metadata:
     openportal.dev/tags: "namespace,kubernetes,core"
     openportal.dev/description: "Creates and manages Kubernetes namespaces with labels and annotations"
     openportal.dev/icon: "folder"
+    # Backstage publishing configuration - enforces system namespace
+    terasky.backstage.io/publish-phase: |
+      gitRepo: "github.com?owner=open-service-portal&repo=catalog-orders"
+      gitBranch: "main"
+      gitLayout: "cluster-scoped"
+      basePath: "system/ManagedNamespace"
+      fixedNamespace: "system"
+      createPr: true
 spec:
   scope: Namespaced # Changed to Namespaced - XRs will live in system namespace
   group: openportal.dev
