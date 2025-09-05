@@ -56,25 +56,9 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started:
-    - Installation: getting-started/installation.md
     - Quick Start: getting-started/quick-start.md
-    - Configuration: getting-started/configuration.md
-  - Architecture:
-    - Overview: architecture/overview.md
-    - XRD Design: architecture/xrd-design.md
-    - Composition Pipeline: architecture/composition.md
-  - Usage:
-    - Creating Namespaces: usage/creating-namespaces.md
-    - RBAC Configuration: usage/rbac.md
-    - Resource Quotas: usage/resource-quotas.md
-    - Labels and Annotations: usage/labels-annotations.md
   - API Reference:
     - ManagedNamespace XR: api/managednamespace.md
-    - Parameters: api/parameters.md
-  - Development:
-    - Local Testing: development/local-testing.md
-    - Contributing: development/contributing.md
-    - Release Process: development/releases.md
 
 plugins:
   - search
