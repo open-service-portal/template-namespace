@@ -49,31 +49,6 @@ spec:
                   pattern: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
                   minLength: 1
                   maxLength: 63
-                labels:
-                  type: object
-                  description: Labels to apply to the namespace
-                  additionalProperties:
-                    type: string
-                  default:
-                    managed-by: crossplane
-                    created-by: backstage
-                annotations:
-                  type: object
-                  description: Annotations to apply to the namespace
-                  additionalProperties:
-                    type: string
-                team:
-                  type: string
-                  description: Team that owns this namespace
-                  default: platform-team
-                environment:
-                  type: string
-                  description: Environment type (dev, staging, production)
-                  default: dev
-                  enum:
-                    - dev
-                    - staging
-                    - production
               required:
                 - name
             status:
