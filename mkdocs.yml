@@ -1,0 +1,69 @@
+site_name: ManagedNamespace Template Documentation
+site_description: Crossplane template for managing Kubernetes namespaces with automated RBAC and resource quotas
+site_url: https://github.com/open-service-portal/template-namespace
+repo_url: https://github.com/open-service-portal/template-namespace
+repo_name: template-namespace
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep purple
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.copy
+  icon:
+    repo: fontawesome/brands/github
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - footnotes
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Quick Start: getting-started/quick-start.md
+  - API Reference:
+    - ManagedNamespace XR: api/managednamespace.md
+
+plugins:
+  - search
+  - techdocs-core
+
+# This annotation is used by Backstage TechDocs
+# The actual annotation goes in catalog-info.yaml, not here
+# backstage.io/techdocs-ref: url:https://github.com/open-service-portal/template-namespace

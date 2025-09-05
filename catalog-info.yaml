@@ -1,0 +1,80 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: template-namespace
+  title: ManagedNamespace Template
+  description: Crossplane template for managing Kubernetes namespaces with automated RBAC and resource quotas
+  labels:
+    openportal.dev/template-type: infrastructure
+    openportal.dev/crossplane-version: v1.17
+  tags:
+    - crossplane
+    - kubernetes
+    - namespace
+    - rbac
+    - infrastructure
+    - platform
+  annotations:
+    # TechDocs configuration - points to the repository containing mkdocs.yml
+    backstage.io/techdocs-ref: url:https://github.com/open-service-portal/template-namespace
+    
+    # Source code repository
+    github.com/project-slug: open-service-portal/template-namespace
+    
+    # Additional metadata
+    openportal.dev/xrd-version: v1alpha1
+    openportal.dev/composition-mode: pipeline
+    crossplane.io/xrd-name: managednamespaces.openportal.dev
+    
+spec:
+  type: template
+  owner: platform-team
+  lifecycle: production
+  system: open-service-portal
+  
+  # Define the provided APIs
+  providesApis:
+    - managednamespace-v1alpha1
+  
+  # Dependencies
+  dependsOn:
+    - resource:default/crossplane
+    - resource:default/provider-kubernetes
+  
+  # Links for quick access
+  links:
+    - url: https://github.com/open-service-portal/template-namespace
+      title: Source Code
+      icon: github
+    - url: https://github.com/open-service-portal/template-namespace/releases
+      title: Releases
+      icon: dashboard
+    - url: https://github.com/open-service-portal/template-namespace/issues
+      title: Issues
+      icon: alert
+
+---
+# API definition for the ManagedNamespace
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: managednamespace-v1alpha1
+  title: ManagedNamespace API v1alpha1
+  description: API for creating and managing Kubernetes namespaces with policies
+  tags:
+    - crossplane
+    - xrd
+spec:
+  type: crossplane-xrd
+  owner: platform-team
+  lifecycle: production
+  system: open-service-portal
+  definition: |
+    apiVersion: openportal.dev/v1alpha1
+    kind: ManagedNamespace
+    spec:
+      namespace: string
+      owner: string (optional)
+      purpose: string (optional)
+      resourceQuota: object (optional)
+      rbac: object (optional)
