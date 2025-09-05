@@ -16,11 +16,13 @@ metadata:
     openportal.dev/description: "Creates and manages Kubernetes namespaces with labels and annotations"
     openportal.dev/icon: "folder"
 spec:
-  scope: Cluster # Namespaces are cluster-scoped resources
+  scope: Namespaced # Changed to Namespaced - XRs will live in system namespace
   group: openportal.dev
   names:
     kind: ManagedNamespace
     plural: managednamespaces
+  defaultCompositionRef:
+    name: managednamespaces  # Added for Crossplane v2
   versions:
     - name: v1alpha1
       served: true

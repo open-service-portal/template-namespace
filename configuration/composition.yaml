@@ -4,7 +4,7 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: managednamespaces.openportal.dev
+  name: managednamespaces  # Simplified name for Crossplane v2
   labels:
     crossplane.io/xrd: managednamespaces.openportal.dev
 spec:
