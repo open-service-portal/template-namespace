@@ -21,7 +21,7 @@ kind: ManagedNamespace
 metadata:
   name: my-team-namespace
 spec:
-  namespace: my-team
+  name: my-team
 ```
 
 Apply the resource:
@@ -45,94 +45,47 @@ kubectl get namespace my-team
 kubectl describe managednamespace my-team-namespace
 ```
 
-## Step 3: Add Resource Quotas
+## Step 3: Create Another Namespace
 
-Update your ManagedNamespace with resource limits:
+Create another namespace with a different name:
 
 ```yaml
 apiVersion: openportal.dev/v1alpha1
 kind: ManagedNamespace
 metadata:
-  name: my-team-namespace
+  name: production-namespace
 spec:
-  namespace: my-team
-  owner: team-lead@company.com
-  purpose: "Development environment"
-  resourceQuota:
-    requests.cpu: "4"
-    requests.memory: "8Gi"
-    limits.cpu: "8"
-    limits.memory: "16Gi"
-    persistentvolumeclaims: "10"
+  name: production
 ```
 
-Apply the updated configuration:
+Apply the resource:
 
 ```bash
-kubectl apply -f my-namespace.yaml
+kubectl apply -f production-namespace.yaml
 ```
 
-## Step 4: Configure RBAC
+## Examples
 
-Add team members with different roles:
+### Team Namespace
 
 ```yaml
 apiVersion: openportal.dev/v1alpha1
 kind: ManagedNamespace
 metadata:
-  name: my-team-namespace
+  name: team-alpha-namespace
 spec:
-  namespace: my-team
-  owner: team-lead@company.com
-  rbac:
-    admins:
-      - admin@company.com
-    editors:
-      - developer1@company.com
-      - developer2@company.com
-    viewers:
-      - auditor@company.com
+  name: team-alpha
 ```
 
-## Common Patterns
-
-### Development Environment
+### Application Namespace
 
 ```yaml
 apiVersion: openportal.dev/v1alpha1
 kind: ManagedNamespace
 metadata:
-  name: dev-environment
+  name: app-frontend-namespace
 spec:
-  namespace: dev
-  environment: development
-  resourceQuota:
-    requests.cpu: "2"
-    requests.memory: "4Gi"
-  labels:
-    environment: dev
-    cost-center: engineering
-```
-
-### Production Namespace
-
-```yaml
-apiVersion: openportal.dev/v1alpha1
-kind: ManagedNamespace
-metadata:
-  name: prod-application
-spec:
-  namespace: production-app
-  environment: production
-  resourceQuota:
-    requests.cpu: "10"
-    requests.memory: "20Gi"
-    limits.cpu: "20"
-    limits.memory: "40Gi"
-  labels:
-    environment: prod
-    criticality: high
-    compliance: required
+  name: app-frontend
 ```
 
 ## Troubleshooting
@@ -149,23 +102,15 @@ Look for conditions and events:
 kubectl describe managednamespace my-team-namespace
 ```
 
-### Resource Quota Not Applied
+### Check Composition
 
-Verify the quota was created:
+Verify the composition is working:
 ```bash
-kubectl get resourcequota -n my-team
-```
-
-### RBAC Not Working
-
-Check role bindings:
-```bash
-kubectl get rolebindings -n my-team
+kubectl get compositions managednamespaces
 ```
 
 ## Next Steps
 
-- 📖 Learn about [RBAC configuration](../usage/rbac.md)
-- 🔧 Explore [advanced configuration](../getting-started/configuration.md)
-- 📊 Set up [resource quotas](../usage/resource-quotas.md)
-- 🏷️ Understand [labels and annotations](../usage/labels-annotations.md)
+- 📖 Review the [API Reference](../api/managednamespace.md)
+- 🔧 Check the main [documentation](../index.md)
+- 📦 Explore the [GitHub repository](https://github.com/open-service-portal/template-namespace)
