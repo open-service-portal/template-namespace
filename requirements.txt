@@ -1,0 +1,6 @@
+# MkDocs requirements for building TechDocs locally
+mkdocs==1.6.1
+mkdocs-material==9.6.8
+mkdocs-techdocs-core==1.5.4
+mkdocs-mermaid2-plugin==1.2.2
+pymdown-extensions==10.14.3

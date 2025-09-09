@@ -32,6 +32,38 @@ The template is deployed via the GitHub Actions release workflow which:
 2. Pushes to GitHub Container Registry
 3. Creates a catalog entry for Flux
 
+## Documentation
+
+This template includes TechDocs documentation that can be built and previewed locally.
+
+### Prerequisites
+
+Install Python dependencies:
+```bash
+# Using pip
+pip3 install -r requirements.txt
+
+# Or using brew + pip
+brew install python@3.11
+pip3 install -r requirements.txt
+```
+
+### Building Documentation Locally
+
+```bash
+# Build the documentation
+mkdocs build
+
+# Serve with live reload for development
+mkdocs serve
+# Then open http://127.0.0.1:8000 in your browser
+
+# Build for production (creates 'site' directory)
+mkdocs build --strict
+```
+
+The documentation is automatically discovered by Backstage through the XRD annotations.
+
 ## Parameters
 
 | Parameter | Type | Required | Description |
