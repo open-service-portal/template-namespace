@@ -2,11 +2,6 @@
 apiVersion: openportal.dev/v1alpha1
 kind: ManagedNamespace
 metadata:
-  name: demo-basic
+  name: basic-namespace
 spec:
-  name: demo-basic
-  team: platform-team
-  environment: dev
-  labels:
-    purpose: demo
-    managed-by: crossplane
+  name: basic
