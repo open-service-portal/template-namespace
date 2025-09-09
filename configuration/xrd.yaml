@@ -9,7 +9,6 @@ metadata:
   labels:
     terasky.backstage.io/generate-form: "true"
     openportal.dev/version: "dev"  # CI/CD will replace with actual version
-    backstage.io/tags: "crossplane,kubernetes,namespace,rbac,infrastructure"
   annotations:
     crossplane.io/version: "v2.0"
     # Backstage catalog metadata for ingestor
@@ -19,10 +18,6 @@ metadata:
     backstage.io/description: "Crossplane template for managing Kubernetes namespaces with automated RBAC and resource quotas"
     # Additional metadata
     openportal.dev/tags: "namespace,kubernetes,core,rbac,infrastructure,platform"
-    openportal.dev/description: "Creates and manages Kubernetes namespaces with labels and annotations"
-    openportal.dev/icon: "folder"
-    openportal.dev/owner: "platform-team"
-    openportal.dev/lifecycle: "production"
     # Backstage publishing configuration - cluster-scoped XRs organized under system/
     terasky.backstage.io/publish-phase: |
       gitRepo: "github.com?owner=open-service-portal&repo=catalog-orders"
