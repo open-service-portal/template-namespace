@@ -54,7 +54,7 @@ markdown_extensions:
       permalink: true
 
 extra_javascript:
-  - https://unpkg.com/mermaid@10.4.0/dist/mermaid.min.js
+  - javascripts/mermaid.min.js
   - javascripts/mermaid-init.js
 
 nav:
