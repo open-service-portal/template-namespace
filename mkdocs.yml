@@ -54,8 +54,7 @@ markdown_extensions:
       permalink: true
 
 extra_javascript:
-  - javascripts/mermaid.min.js
-  - javascripts/mermaid-init.js
+  - assets/javascripts/mermaid.min.js
 
 nav:
   - Home: index.md
