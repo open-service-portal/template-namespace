@@ -16,6 +16,9 @@ metadata:
     backstage.io/source-location: "url:https://github.com/open-service-portal/template-namespace"
     backstage.io/title: "ManagedNamespace Template"
     backstage.io/description: "Crossplane template for managing Kubernetes namespaces with automated RBAC and resource quotas"
+    # Template selection for cluster-scoped resources
+    backstage.io/parameters-template: "cluster-scoped"
+    backstage.io/steps-template: "cluster-scoped"
     # Additional metadata
     openportal.dev/tags: "namespace,kubernetes,core,rbac,infrastructure,platform"
     # Backstage publishing configuration - cluster-scoped XRs organized under system/
