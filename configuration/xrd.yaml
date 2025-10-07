@@ -10,24 +10,33 @@ metadata:
     terasky.backstage.io/generate-form: "true"
     openportal.dev/version: "dev"  # CI/CD will replace with actual version
   annotations:
-    crossplane.io/version: "v2.0"
-    # Backstage catalog metadata for ingestor
-    backstage.io/techdocs-ref: "url:https://github.com/open-service-portal/template-namespace"
-    backstage.io/source-location: "url:https://github.com/open-service-portal/template-namespace"
+    # Standard Backstage metadata
     backstage.io/title: "ManagedNamespace Template"
     backstage.io/description: "Crossplane template for managing Kubernetes namespaces with automated RBAC and resource quotas"
-    # Template selection for cluster-scoped resources
-    backstage.io/parameters-template: "cluster-scoped"
-    backstage.io/steps-template: "cluster-scoped"
-    # Additional metadata
+    backstage.io/owner: "platform-team"
+    backstage.io/system: "infrastructure-templates"
+    backstage.io/lifecycle: "experimental"
+    backstage.io/source-location: "url:https://github.com/open-service-portal/template-namespace"
+    backstage.io/techdocs-ref: "url:https://github.com/open-service-portal/template-namespace"
+
+    # XRD Transform - cluster-scoped templates
+    openportal.dev/parameters-template: "cluster-scoped"
+    openportal.dev/steps-template: "cluster-scoped"
+
+    # Project metadata
     openportal.dev/tags: "namespace,kubernetes,core,rbac,infrastructure,platform"
-    # Backstage publishing configuration - cluster-scoped XRs organized under system/
-    terasky.backstage.io/publish-phase: |
+    openportal.dev/version: "dev"
+
+    # GitOps publishing configuration
+    openportal.dev/publish-phase: |
       gitRepo: "github.com?owner=open-service-portal&repo=catalog-orders"
       gitBranch: "main"
       gitLayout: "cluster-scoped"
       basePath: "system/ManagedNamespace"
       createPr: true
+
+    # Crossplane
+    crossplane.io/version: "v2.0"
 spec:
   scope: Cluster # Must be Cluster-scoped to create Namespace resources
   group: openportal.dev
