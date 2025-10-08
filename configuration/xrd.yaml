@@ -11,17 +11,16 @@ metadata:
     openportal.dev/version: "dev"  # CI/CD will replace with actual version
   annotations:
     # Standard Backstage metadata
-    backstage.io/title: "ManagedNamespace Template"
-    backstage.io/description: "Crossplane template for managing Kubernetes namespaces with automated RBAC and resource quotas"
+    backstage.io/title: "Managed Namespace"
+    backstage.io/description: "Crossplane template for managing Kubernetes namespaces"
     backstage.io/owner: "platform-team"
     backstage.io/system: "infrastructure-templates"
     backstage.io/lifecycle: "experimental"
     backstage.io/source-location: "url:https://github.com/open-service-portal/template-namespace"
     backstage.io/techdocs-ref: "url:https://github.com/open-service-portal/template-namespace"
 
-    # XRD Transform - cluster-scoped templates
-    openportal.dev/parameters-template: "cluster-scoped"
-    openportal.dev/steps-template: "cluster-scoped"
+    # XRD Transform - GitOps PR workflow
+    openportal.dev/template-steps: "gitops"
 
     # Project metadata
     openportal.dev/tags: "namespace,kubernetes,core,rbac,infrastructure,platform"
