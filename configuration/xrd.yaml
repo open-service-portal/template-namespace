@@ -20,19 +20,13 @@ metadata:
     backstage.io/techdocs-ref: "url:https://github.com/open-service-portal/template-namespace"
 
     # XRD Transform - GitOps PR workflow
-    openportal.dev/template-steps: "gitops"
+    # openportal.dev/template-parameters: "gitops"
+    # openportal.dev/template-steps: "gitops"
+    openportal.dev/includeNameInSpec: "true"
 
     # Project metadata
     openportal.dev/tags: "namespace,kubernetes,core,rbac,infrastructure,platform"
     openportal.dev/version: "dev"
-
-    # GitOps publishing configuration
-    openportal.dev/publish-phase: |
-      gitRepo: "github.com?owner=open-service-portal&repo=catalog-orders"
-      gitBranch: "main"
-      gitLayout: "cluster-scoped"
-      basePath: "system/ManagedNamespace"
-      createPr: true
 
     # Crossplane
     crossplane.io/version: "v2.0"
